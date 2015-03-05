@@ -1,0 +1,59 @@
+from math import *
+from numpy import *
+from pylab import *
+
+
+def f(x):
+    return (x**4*e**x)/(e**x-1)**2                                          #This is the defined function for taking the integral
+debye_temperature=float(input("Enter the Debye temperature in Kelvin: "))   #Line 14 to 18 gives the constants
+temperature=float(input("Enter the temperature of the soild in Kelvin: "))
+V=float(input("Enter the volume of the soild in cubic meters: "))
+density=6.022*10**28
+boltzmanns_constant=1.380650*10**-23
+N = 1000                                                #Line 19 to 34 solves the integral of the Debye's Theory using the Simspon's RUle
+
+a = 0.000000001
+b = debye_temperature/temperature
+h = (b-a)/N
+
+s = f(a) + f(b)
+s1 = 0 
+s2 = 0 
+for k in range(1,N,2):
+    s1 += f(a+k*h)
+for k in range(2,N,2):
+    s2 += f(a+k*h)
+
+
+integral=((1/3.0)*h*(s+(4*s1)+(2*s2)))
+constants=9*V*density*boltzmanns_constant                    #Line 35 to 37 puts together the formula to print out the answer
+t_constants=(temperature/debye_temperature)**3
+print'The heat capacity of aluminum is: ',t_constants*integral*constants
+
+xpoints=[]                                                  #Line 39 on is just plotting the answers with respect to the Temperature
+ypoints=[]
+for x in linspace(5,500,100):
+    xpoints.append(x)
+    N = 1000
+    a = 0.000000001
+    b = debye_temperature/x
+    h = (b-a)/N
+
+    s = f(a) + f(b)
+    s1 = 0 
+    s2 = 0 
+    for k in range(1,N,2):
+        s1 += f(a+k*h)
+    for k in range(2,N,2):
+        s2 += f(a+k*h)
+
+
+    integral=((1/3.0)*h*(s+(4*s1)+(2*s2)))
+    ypoints.append(9*V*density*boltzmanns_constant*((x/debye_temperature)**3)*integral)
+    
+plot(xpoints,ypoints)
+ylim(0,2500)
+xlim(5,500)
+xlabel("Temperature (K)")
+ylabel("Heat Capacity")
+show()
